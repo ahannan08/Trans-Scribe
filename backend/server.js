@@ -13,7 +13,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: "https://your-vercel-domain.vercel.app", // Replace with your Vercel domain
+    origin: "https://trans-scribe.vercel.app", // Replace with your Vercel domain
     credentials: true,
 }));
 app.use(bodyParser.json());

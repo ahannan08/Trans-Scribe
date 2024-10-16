@@ -1,8 +1,9 @@
 
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_TRANSCRIPTION_API_URL;
-
+// Accessing the API URL from environment variables
+const API_URL = import.meta.env.VITE_TRANSCRIPTION_API_URL;
+console.log("Transcription API URL:", API_URL);
 export const fetchTranscriptions = async () => {
     try {
         const response = await axios.get(`${API_URL}/get`);
