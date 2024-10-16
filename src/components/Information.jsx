@@ -1,88 +1,124 @@
-import React, { useState, useEffect, useRef } from 'react'
-import Transcription from './Transcription'
-import Translation from './Translation'
+import React, { useState, useEffect, useRef } from 'react';
+import Transcription from './Transcription';
+import Translation from './Translation';
+import { postTranscription } from '../../apiServices'; // Import the postTranscription function
+
 
 export default function Information(props) {
-    const { output, finished } = props
-    const [tab, setTab] = useState('transcription')
-    const [translation, setTranslation] = useState(null)
-    const [toLanguage, setToLanguage] = useState('Select language')
-    const [translating, setTranslating] = useState(null)
-    console.log(output)
+    const { output, finished } = props;
+    const [tab, setTab] = useState('transcription');
+    const [translation, setTranslation] = useState(null);
+    const [toLanguage, setToLanguage] = useState('Select language');
+    const [translating, setTranslating] = useState(false);
+    const [originalText, setOriginalText] = useState('');
 
-    const worker = useRef()
+    console.log(output);
+    useEffect(() => {
+        if (output && output.length > 0) {
+            const combinedText = output.map(val => val.text).join(' ');
+            setOriginalText(combinedText);
+            console.log("original is ", combinedText); // This should log the updated original text
+        }
+    }, [output]);
+
+    const worker = useRef();
 
     useEffect(() => {
         if (!worker.current) {
             worker.current = new Worker(new URL('../utils/translate.worker.js', import.meta.url), {
                 type: 'module'
-            })
+            });
         }
 
         const onMessageReceived = async (e) => {
             switch (e.data.status) {
                 case 'initiate':
-                    console.log('DOWNLOADING')
+                    console.log('DOWNLOADING');
                     break;
                 case 'progress':
-                    console.log('LOADING')
+                    console.log('LOADING');
                     break;
                 case 'update':
-                    setTranslation(e.data.output)
-                    console.log(e.data.output)
+                    setTranslation(e.data.output);
+                    console.log("updated translation", e.data.output);
                     break;
                 case 'complete':
-                    setTranslating(false)
-                    console.log("DONE")
+                    setTranslating(false);
+                    console.log("DONE");
                     break;
             }
         }
 
-        worker.current.addEventListener('message', onMessageReceived)
+        worker.current.addEventListener('message', onMessageReceived);
 
-        return () => worker.current.removeEventListener('message', onMessageReceived)
-    })
+        return () => worker.current.removeEventListener('message', onMessageReceived);
+    }, []);
 
-    const textElement = tab === 'transcription' ? output.map(val => val.text) : translation || ''
+    const textElement = tab === 'transcription' ? output.map(val => val.text).join(' ') : translation || '';
+
+    async function handleSave() {
+        if (!output || output.length === 0) {
+            console.error('No transcription available to save.');
+            return;
+        }
+
+        const transcribedText = textElement; // Combine the transcribed text
+        const audioName = 'Recorded Audio'; // You can customize this name
+
+        try {
+            await postTranscription(audioName, transcribedText); // Save transcription to the backend
+            console.log('Transcription saved to the database');
+        } catch (error) {
+            console.error('Error saving transcription:', error);
+        }
+    }
 
     function handleCopy() {
         navigator.clipboard.writeText(textElement)
+            .then(() => console.log('Text copied to clipboard'))
+            .catch(err => console.error('Error copying text: ', err));
     }
 
     function handleDownload() {
-        const element = document.createElement("a")
-        const file = new Blob([textElement], { type: 'text/plain' })
-        element.href = URL.createObjectURL(file)
-        element.download = `Freescribe_${new Date().toString()}.txt`
-        document.body.appendChild(element)
-        element.click()
+        const element = document.createElement("a");
+        const file = new Blob([textElement], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `Freescribe_${new Date().toString()}.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
     }
 
     function generateTranslation() {
         if (translating || toLanguage === 'Select language') {
-            return
+            return;
         }
 
-        setTranslating(true)
+        setTranslating(true);
 
         worker.current.postMessage({
             text: output.map(val => val.text),
             src_lang: 'eng_Latn',
             tgt_lang: toLanguage
-        })
+        });
     }
 
 
 
+    const handleRedirect = () => {
+        window.location.href = '/'; // Navigate to the home page
+    };
+
 
     return (
-        <main className='flex-1  p-4 flex flex-col gap-3 text-center sm:gap-4 justify-center pb-20 max-w-prose w-full mx-auto'>
+        <main className='flex-1 p-4 flex flex-col gap-3 text-center sm:gap-4 justify-center pb-20 max-w-prose w-full mx-auto'>
             <h1 className='font-semibold text-4xl sm:text-5xl md:text-6xl whitespace-nowrap'>Your <span className='text-blue-400 bold'>Transcription</span></h1>
 
-            <div className='grid grid-cols-2 sm:mx-auto bg-white  rounded overflow-hidden items-center p-1 blueShadow border-[2px] border-solid border-blue-300'>
+            <div className='grid grid-cols-2 sm:mx-auto bg-white rounded overflow-hidden items-center p-1 blueShadow border-[2px] border-solid border-blue-300'>
                 <button onClick={() => setTab('transcription')} className={'px-4 rounded duration-200 py-1 ' + (tab === 'transcription' ? ' bg-blue-300 text-white' : ' text-blue-400 hover:text-blue-600')}>Transcription</button>
                 <button onClick={() => setTab('translation')} className={'px-4 rounded duration-200 py-1  ' + (tab === 'translation' ? ' bg-blue-300 text-white' : ' text-blue-400 hover:text-blue-600')}>Translation</button>
             </div>
+
             <div className='my-8 flex flex-col-reverse max-w-prose w-full mx-auto gap-4'>
                 {(!finished || translating) && (
                     <div className='grid place-items-center'>
@@ -92,17 +128,37 @@ export default function Information(props) {
                 {tab === 'transcription' ? (
                     <Transcription {...props} textElement={textElement} />
                 ) : (
-                    <Translation {...props} toLanguage={toLanguage} translating={translating} textElement={textElement} setTranslating={setTranslating} setTranslation={setTranslation} setToLanguage={setToLanguage} generateTranslation={generateTranslation} />
+                    <Translation 
+                        {...props} 
+                        toLanguage={toLanguage} 
+                        translating={translating} 
+                        textElement={textElement} 
+                        setTranslating={setTranslating} 
+                        setTranslation={setTranslation} 
+                        setToLanguage={setToLanguage} 
+                        generateTranslation={generateTranslation} 
+                        originalText={originalText} // Pass originalText here
+                    />
                 )}
             </div>
+
             <div className='flex items-center gap-4 mx-auto '>
-                <button onClick={handleCopy} title="Copy" className='bg-white  hover:text-blue-500 duration-200 text-blue-300 px-2 aspect-square grid place-items-center rounded'>
+                <button onClick={handleCopy} title="Copy" className='bg-white hover:text-blue-500 duration-200 text-blue-300 px-2 aspect-square grid place-items-center rounded'>
                     <i className="fa-solid fa-copy"></i>
                 </button>
-                <button onClick={handleDownload} title="Download" className='bg-white  hover:text-blue-500 duration-200 text-blue-300 px-2 aspect-square grid place-items-center rounded'>
+                <button onClick={handleDownload} title="Download" className='bg-white hover:text-blue-500 duration-200 text-blue-300 px-2 aspect-square grid place-items-center rounded'>
                     <i className="fa-solid fa-download"></i>
                 </button>
+                <button onClick={handleSave} title="Save" className='bg-white hover:text-blue-500 duration-200 text-blue-300 px-2 aspect-square grid place-items-center rounded'>
+                    <i className="fa-solid fa-save"></i>
+                </button>
+                <button
+                onClick={handleRedirect}
+                className='specialBtn px-4 py-2 mt-4 text-blue-400 hover:text-blue-600 duration-200 rounded-lg'
+            >
+                Go to Home
+            </button>
             </div>
         </main>
-    )
+    );
 }

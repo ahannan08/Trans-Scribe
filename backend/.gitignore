@@ -1,0 +1,28 @@
+# Backend-specific ignores
+
+# Node modules
+node_modules/
+
+# Log files
+logs/
+*.log
+
+# dotenv environment variables file
+.env
+
+# Optional npm cache directory
+.npm
+
+# MongoDB dump files
+dump/
+
+# Coverage directory
+coverage/
+
+# IDEs and Editors
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db

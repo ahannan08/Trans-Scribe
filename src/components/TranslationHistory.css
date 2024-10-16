@@ -1,0 +1,49 @@
+.translation-card {
+    padding: 2px; /* Padding around the card */
+    background-color: white; /* Background color for the card */
+    border-radius: 8px; /* Rounded corners for the card */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-bottom: 20px;
+    width: 45%; /* Width of the card */
+}
+
+.translation-list {
+    max-height: 250px; /* Height of the list before scrolling */
+    list-style-type: none; /* Remove default list styles */
+    padding: 0; /* Remove default padding */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hide horizontal overflow */
+}
+
+/* Optional: Style for scrollbar on webkit browsers (Chrome, Safari) */
+.translation-list::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.translation-list::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Track color */
+    border-radius: 4px; /* Round edges of track */
+}
+
+.translation-list::-webkit-scrollbar-thumb {
+    background: #3B82F6; /* Color of the scrollbar */
+    border-radius: 4px; /* Round edges of scrollbar */
+}
+
+.translation-item {
+    margin-bottom: 16px; /* Space below each translation item */
+    padding: 4px; /* Padding for each item */
+    border: 1px solid #D1D5DB; /* Light gray border */
+    border-radius: 4px; /* Rounded corners for items */
+    background-color: #f9f9f9; /* Light gray background for items */
+}
+
+.translation-item strong {
+    color: #3B82F6; /* Blue color for labels */
+}
+
+h2 {
+    font-size: 1.5rem; /* Font size for heading */
+    color: #333; /* Darker color for heading */
+    margin-bottom: 16px; /* Space below heading */
+}

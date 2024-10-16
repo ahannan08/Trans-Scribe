@@ -1,0 +1,50 @@
+/* Transcription card styles */
+.transcription-card {
+    padding: 20px; /* Padding around the card */
+    background-color: white; /* Background color for the card */
+    border-radius: 8px; /* Rounded corners for the card */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-bottom: 20px;
+    overflow: hidden; /* Prevent overflow in the entire card */
+}
+
+/* Custom scrollbar styles for the transcription list */
+.transcription-list::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+}
+
+.transcription-list::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Background of the scrollbar track */
+    border-radius: 10px; /* Rounded edges for track */
+}
+
+.transcription-list::-webkit-scrollbar-thumb {
+    background: #000000; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded edges for thumb */
+}
+
+.transcription-list::-webkit-scrollbar-thumb:hover {
+    background: #ce3636; /* Color of the thumb on hover */
+}
+
+/* Transcription list styles */
+.transcription-list {
+    list-style-type: none; /* Remove default list styles */
+    padding: 0; /* Remove default padding */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hide horizontal overflow */
+    max-height: 400px; /* Set a maximum height for the list */
+}
+
+
+.transcription-item {
+    margin-bottom: 16px; 
+    padding: 10px; 
+    border: 1px solid #D1D5DB; 
+    border-radius: 4px; 
+    background-color: #f9f9f9; 
+}
+
+.transcription-item strong {
+    color: #3B82F6; /* Blue color for labels */
+}

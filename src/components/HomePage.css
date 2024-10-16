@@ -1,0 +1,13 @@
+.history-container {
+    display: flex; /* Use flexbox layout */
+    justify-content: space-between; /* Space between the components */
+    gap: 20px; /* Space between the two components */
+    margin-top: 20px; /* Space above the history container */
+}
+
+.transcription-card,
+.translation-card {
+    width: 48%; /* Width for each component */
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+    max-height: 400px; /* Set a maximum height */
+}
