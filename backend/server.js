@@ -13,8 +13,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: "https://trans-scribe.vercel.app", // Replace with your Vercel domain
-    credentials: true,
+    origin: 'http://localhost:5173', // Allow requests from your frontend
+    methods: ['GET', 'POST'], // Allow specific methods
+    credentials: true // Include credentials (if needed)
 }));
 app.use(bodyParser.json());
 

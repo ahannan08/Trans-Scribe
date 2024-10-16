@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './TranslationHistory.css'; // Import the CSS file for styling
 
-const TRANSLATION_API_URL = import.meta.env.VITE_TRANSCRIPTION_API_URL;
+const TRANSLATION_API_URL = import.meta.env.VITE_TRANSLATION_API_URL;
 console.log("Trans API URL:", TRANSLATION_API_URL);
 
 
