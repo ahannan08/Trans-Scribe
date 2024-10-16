@@ -2,7 +2,7 @@ import React from 'react';
 import { LANGUAGES } from '../utils/presets';
 import axios from 'axios'; // Import axios for making HTTP requests
 
-const API_URL = 'http://localhost:3001/api/translation'; // Adjust based on your backend URL
+const TRANSLATION_API_URL = process.env.REACT_APP_TRANSLATION_API_URL;
 
 export default function Translation(props) {
     console.log('Received props:', props);
@@ -18,7 +18,7 @@ export default function Translation(props) {
 
         try {
             console.log("originalText to save:", originalText); // Ensure originalText is logged for debugging
-            const response = await axios.post(`${API_URL}/post`, {
+            const response = await axios.post(`${TRANSLATION_API_URL}/post`, {
                 originalText: originalText,
                 translatedText: textElement, // Ensure this is the translated text
                 toLanguage,

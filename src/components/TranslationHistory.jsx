@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './TranslationHistory.css'; // Import the CSS file for styling
 
-const API_URL = 'http://localhost:3001/api/translation'; // Adjust this based on your backend URL
+const TRANSLATION_API_URL = process.env.REACT_APP_TRANSLATION_API_URL;
 
 export default function TranslationHistory() {
     const [translations, setTranslations] = useState([]);
@@ -11,7 +11,7 @@ export default function TranslationHistory() {
     useEffect(() => {
         const getTranslations = async () => {
             try {
-                const response = await axios.get(`${API_URL}/get`); // Make sure your backend has this route
+                const response = await axios.get(`${TRANSLATION_API_URL}/get`); // Make sure your backend has this route
                 setTranslations(response.data);
             } catch (error) {
                 console.error("Error fetching translations:", error);

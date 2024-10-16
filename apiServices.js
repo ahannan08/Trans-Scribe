@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/transcriptions'; // Adjust based on your backend URL
+const API_URL = process.env.REACT_APP_TRANSCRIPTION_API_URL;
 
 export const fetchTranscriptions = async () => {
     try {
